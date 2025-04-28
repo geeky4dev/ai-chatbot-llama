@@ -115,10 +115,4 @@ Step 9️⃣:  Open the browser with http://localhost:5173 and try some question
 ✅ Flask is used to build the web application (the logic in the backend).    
 ✅ React is the engine of your frontend UI, the main tool used to build the user interface (UI) of the web application.  
 ✅ Vite is the environment you develop in — fast, modern, and super smooth.  
-✅ Virtual environment keeps dependencies organized. 
-
-...
-📜 License
-MIT License.
-
-Created by geeky4dev – feel free to fork, contribute, or star 🌟 the project!
+✅ Virtual environment keeps dependencies organized.
