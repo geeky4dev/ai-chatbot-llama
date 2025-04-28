@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Chatbot FAQ</h1>
+      <h1>AI Chatbot gemini-1.5-pro</h1>
       <input
         type="text"
         value={mensaje}

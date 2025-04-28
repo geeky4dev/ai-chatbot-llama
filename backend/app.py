@@ -1,28 +1,38 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import google.generativeai as genai
+import os
 
 app = Flask(__name__)
-CORS(app)  # Permite conexión desde el frontend
+CORS(app)
 
-RESPUESTAS_FAQ_ORIGINAL = {
-    "hola": "¡Hola! ¿En qué puedo ayudarte?",
-    "qué es tu empresa": "Somos una empresa de ejemplo que usa IA.",
-    "adiós": "¡Hasta luego!",
-    "cómo estás": "Estoy bien, gracias por preguntar.",
-    "cuál es tu propósito": "Mi propósito es ayudarte respondiendo preguntas frecuentes.",
-    "qué tecnologías usas": "Uso tecnologías como Flask para el backend y React para el frontend.",
-    "qué es Flask": "Flask es un framework web de Python utilizado para construir aplicaciones web."
-}
-# Crear una versión con claves en minúscula
-RESPUESTAS_FAQ = {k.lower(): v for k, v in RESPUESTAS_FAQ_ORIGINAL.items()}
+# Configura tu API Key de Gemini
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("La variable de entorno GEMINI_API_KEY no está configurada.")
+genai.configure(api_key=api_key)
+
+# Configuración del chatbot
+SYSTEM_PROMPT = "Eres un asistente amigable que responde preguntas de manera clara y concisa."
+GEMINI_MODEL = "models/gemini-1.5-pro"  # Modelo de Gemini
+TEMPERATURE = 0.7
 
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    mensaje = data.get("mensaje", "").strip().lower()  # Normaliza la entrada
-    print(f"Mensaje recibido (normalizado): '{mensaje}'")  # Depuración
-    respuesta = RESPUESTAS_FAQ.get(mensaje, "Lo siento, no entendí tu pregunta.")
-    return jsonify({"respuesta": respuesta})
+    mensaje = data.get("mensaje", "").strip()
+    print(f"Mensaje recibido: '{mensaje}'")
+
+    try:
+        # Generar la respuesta usando el modelo de Gemini
+        model = genai.GenerativeModel(model_name=GEMINI_MODEL)
+        response = model.generate_content(mensaje)
+        respuesta_texto = response.text
+    except Exception as e:
+        print(f"Error al contactar Gemini: {e}")
+        respuesta_texto = "El chatbot está temporalmente no disponible. Por favor, intenta más tarde."
+
+    return jsonify({"respuesta": respuesta_texto})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
