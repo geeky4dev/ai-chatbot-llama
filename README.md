@@ -1,7 +1,8 @@
 # ai-chatbot
 App where the user asks questions and the AI Chatbot responds.   
-The Modell used is Gemini 1.5 Pro (multimodal Large Language Model developed by Google, released in 2024).       
-Basic logic in Python and the project is running locally (not dockerized) to facilitate the design.       
+The Modell used is Gemini 1.5 Pro (multimodal Large Language Model developed by Google, released in 2024).    
+Basic logic in Python and the project is running locally (not dockerized)    
+to facilitate the design.    
 
 It uses following technologies:      
 
