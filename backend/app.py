@@ -1,38 +1,51 @@
+import os
+import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
-import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Configura tu API Key de Gemini
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise ValueError("La variable de entorno GEMINI_API_KEY no está configurada.")
-genai.configure(api_key=api_key)
-
-# Configuración del chatbot
-SYSTEM_PROMPT = "Eres un asistente amigable que responde preguntas de manera clara y concisa."
-GEMINI_MODEL = "models/gemini-1.5-pro"  # Modelo de Gemini
-TEMPERATURE = 0.7
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+print("GROQ_API_KEY:", GROQ_API_KEY)  # To confirm the key is read correctly
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-    mensaje = data.get("mensaje", "").strip()
-    print(f"Mensaje recibido: '{mensaje}'")
-
     try:
-        # Generar la respuesta usando el modelo de Gemini
-        model = genai.GenerativeModel(model_name=GEMINI_MODEL)
-        response = model.generate_content(mensaje)
-        respuesta_texto = response.text
-    except Exception as e:
-        print(f"Error al contactar Gemini: {e}")
-        respuesta_texto = "El chatbot está temporalmente no disponible. Por favor, intenta más tarde."
+        data = request.get_json()
+        user_input = data.get("message", "")
 
-    return jsonify({"respuesta": respuesta_texto})
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "llama3-8b-8192",
+                "messages": [
+                    {"role": "system", "content": "You are a helpful general ai assistant."},
+                    {"role": "user", "content": user_input}
+                ]
+            }
+        )
+        
+        print(f"Status code: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        if response.ok:
+            result = response.json()
+            reply = result["choices"][0]["message"]["content"]
+            return jsonify({"reply": reply})
+        else:
+            print("Error status code:", response.status_code)
+            print("Error response body:", response.text)
+            return jsonify({"error": "Error from Groq API", "details": response.text}), 500
+
+    except Exception as e:
+        print("Error in /chat endpoint:", e)
+        return jsonify({"error": "Internal server error"}), 500
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(debug=True, port=5001)
