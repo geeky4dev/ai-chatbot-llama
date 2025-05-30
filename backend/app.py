@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)   # To allow requests from the frontend
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 print("GROQ_API_KEY:", GROQ_API_KEY)  # To confirm the key is read correctly
