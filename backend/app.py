@@ -9,9 +9,9 @@ CORS(app)   # To allow requests from the frontend
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 print("GROQ_API_KEY:", GROQ_API_KEY)  # To confirm the key is read correctly
 
-@app.route("/ping", methods=["GET"])
-def ping():
-    return jsonify({"status": "ok", "message": "Backend is live!"})
+@app.route("/")
+def home():
+    return "API is running ok"
 
 @app.route("/chat", methods=["POST"])
 def chat():
