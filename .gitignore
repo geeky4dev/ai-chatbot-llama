@@ -1,0 +1,40 @@
+# === Entornos ===
+
+# Ignorar archivos .env en backend y frontend
+/backend/.env
+/frontend/.env
+
+# === Dependencias y builds ===
+node_modules/
+dist/
+build/
+dist-ssr/
+
+# === Archivos temporales y logs ===
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.local
+
+# === Archivos del sistema y editores ===
+.DS_Store
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# === Python (si usas Flask o cualquier backend en Python) ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env/  # virtualenv local si usas `python -m venv .env` (opcional)
+venv/
+
