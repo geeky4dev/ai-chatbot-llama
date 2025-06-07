@@ -38,3 +38,4 @@ __pycache__/
 .env/  # virtualenv local si usas `python -m venv .env` (opcional)
 venv/
 
+frontend/.env.production
